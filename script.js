@@ -14,10 +14,12 @@ const Gameboard = (() => {
   };
 
   const getBoard = () => {
+    return _board;
+  };
+  const printBoard = () => {
     for (let i = 0; i < _rows; i++) {
       console.log(_board[i]);
     }
-    return _board;
   };
 
   const getCell = (i, j) => {
@@ -29,19 +31,26 @@ const Gameboard = (() => {
   };
 
   const checkRowsForWin = (rowArray) => {
-    const allEqual = (arr) => arr.every((index) => index === arr[0]);
+    const allEqual = (arr) =>
+      arr.every((index) => index === arr[0] && index !== 0);
     return allEqual(rowArray);
   };
   const checkColsForWin = (colArray) => {
-    const allEqual = (arr) => arr.every((index) => index === arr[0]);
+    const allEqual = (arr) =>
+      arr.every((index) => index === arr[0] && index !== 0);
     return allEqual(colArray);
   };
   const checkHorizontalForWin = () => {
-    if (_board[0][0] == _board[1][1] && _board[0][0] == _board[2][2]) {
-      return true;
-    }
-    if (_board[0][2] == _board[1][1] && _board[0][2] == _board[2][0]) {
-      return true;
+    if (
+      (_board[0][0] !== 0 && _board[1][1] !== 0 && _board[2][2] !== 0) ||
+      (_board[0][2] !== 0 && _board[1][1] !== 0 && _board[2][0] !== 0)
+    ) {
+      if (_board[0][0] == _board[1][1] && _board[0][0] == _board[2][2]) {
+        return true;
+      }
+      if (_board[0][2] == _board[1][1] && _board[0][2] == _board[2][0]) {
+        return true;
+      }
     }
     return false;
   };
@@ -54,6 +63,7 @@ const Gameboard = (() => {
   return {
     createNewBoard,
     getBoard,
+    printBoard,
     getCell,
     setCell,
     checkCell,
@@ -79,6 +89,10 @@ const Player = (symbol) => {
     }
   };
 
+  return { getSymbol, placeSymbol };
+};
+
+const GameController = (() => {
   const checkForWin = () => {
     let _board = Gameboard.getBoard();
 
@@ -92,38 +106,36 @@ const Player = (symbol) => {
         //loop through rows
         colArray[j] = _board[j][i];
       }
-      Gameboard.checkColsForWin(colArray);
+      if (Gameboard.checkColsForWin(colArray)) {
+        console.log("player wins");
+      }
     }
 
-    console.log(Gameboard.checkHorizontalForWin());
+    Gameboard.checkHorizontalForWin();
   };
 
-  return { getSymbol, placeSymbol, checkForWin };
-};
-
-/* const GameController = (() => {
-  const choosePlayerSymbol = () => {
-    const pickSymbol = prompt("Will you be X or O?")
-    if
-  }
-
-  const getPlayerTurn = (player) => {
-    let _playerTurn = false;
-    if (player.getSymbol == 'O'){
-        _playerTurn = true
-        if (_playerTurn == true)
-    }
-  }
-  
-  //start new round if no winner found
-})(); */
+  return { checkForWin };
+})();
 
 //newGame
 const me = Player("X");
 const them = Player("O");
 
 Gameboard.createNewBoard();
+me.placeSymbol(0, 2);
+me.placeSymbol(1, 2);
+me.placeSymbol(2, 2);
+Gameboard.printBoard();
+GameController.checkForWin();
 
-me.placeSymbol(0, 1);
-Gameboard.getBoard();
-me.checkForWin();
+let currentPlayer = Player[0];
+
+const getCurrentPlayer = () => {
+  console.log(currentPlayer);
+  return currentPlayer;
+};
+const getPlayerTurn = (player) => {
+  currentPlayer = currentPlayer == Player[0] ? Player[1] : Player[0];
+};
+
+return { getPlayerTurn, getCurrentPlayer };
