@@ -1,33 +1,22 @@
 //Board object
 const Gameboard = (() => {
-  const _rows = 3;
-  const _columns = 3;
+  const _cells = 9;
   const _board = [];
 
-  const createNewBoard = () => {
-    for (let i = 0; i < _rows; i++) {
-      _board[i] = []; //create array for each row
-      for (let j = 0; j < _columns; j++) {
-        _board[i].push(0); //fill array with empty cells
-      }
-    }
+  for (let i = 0; i < _cells; i++) {
+    _board[i] = ""; //fill array with 9 empty cells
+  }
+
+  const render = () => {
+    let boardCell = "";
+    _board.forEach((cell, index) => {
+      boardCell += `<div class="boardCells" id=${index}></div>`;
+    });
+    document.querySelector("#boardContainer").innerHTML = boardCell;
   };
 
-  const getBoard = () => {
-    return _board;
-  };
-  const printBoard = () => {
-    for (let i = 0; i < _rows; i++) {
-      console.log(_board[i]);
-    }
-  };
-
-  const getCell = (i, j) => {
-    console.log(_board[i][j]);
-  };
-
-  const checkCell = (i, j) => {
-    return _board[i][j] == 0 ? true : false;
+  /*   const checkCell = (i) => {
+    return _board[i] == 0 ? true : false;
   };
 
   const checkRowsForWin = (rowArray) => {
@@ -55,49 +44,47 @@ const Gameboard = (() => {
     return false;
   };
 
-  const setCell = (i, j, symbol) => {
-    //_board[i][j] = player.getSymbol();
-    _board[i][j] = symbol;
-  };
+  const setCell = (i, symbol) => {
+    _board[i] = symbol;
+  }; */
 
   return {
-    createNewBoard,
-    getBoard,
-    printBoard,
-    getCell,
+    /* createNewBoard,
     setCell,
     checkCell,
     checkRowsForWin,
     checkColsForWin,
-    checkHorizontalForWin,
+    checkHorizontalForWin, */
+    render,
   };
 })();
 
 //Player object
-const Player = (symbol) => {
-  const _playerSymbol = symbol;
-
-  const getSymbol = () => {
-    console.log(_playerSymbol);
-  };
-
-  const placeSymbol = (i, j) => {
-    if (Gameboard.checkCell(i, j)) {
-      Gameboard.setCell(i, j, symbol);
-    } else {
-      console.log("Pick empty cell");
-    }
-  };
-
-  return { getSymbol, placeSymbol };
+const createPlayer = (name, symbol) => {
+  return { name, symbol };
 };
 
 const GameController = (() => {
-  const checkForWin = () => {
-    let _board = Gameboard.getBoard();
+  let players = [];
+  let currentPlayerIndex;
+  let gameOver;
 
+  const start = () => {
+    players = [
+      createPlayer(document.querySelector("#player1").value, "X"),
+      createPlayer(document.querySelector("#player1").value, "O"),
+    ];
+
+    currentPlayerIndex = 0;
+    gameOver = false;
+    Gameboard.render();
+  };
+
+  /* const board = Gameboard.getBoard();
+
+  const checkForWin = () => {
     for (i = 0; i < 3; i++) {
-      Gameboard.checkRowsForWin(_board[i]);
+      board.checkRowsForWin(_board[i]);
     }
     for (i = 0; i < 3; i++) {
       //collect 3 different arrays
@@ -106,36 +93,18 @@ const GameController = (() => {
         //loop through rows
         colArray[j] = _board[j][i];
       }
-      if (Gameboard.checkColsForWin(colArray)) {
+      if (board.checkColsForWin(colArray)) {
         console.log("player wins");
       }
     }
 
-    Gameboard.checkHorizontalForWin();
-  };
+    board.checkHorizontalForWin();
+  }; */
 
-  return { checkForWin };
+  return { start };
 })();
 
-//newGame
-const me = Player("X");
-const them = Player("O");
-
-Gameboard.createNewBoard();
-me.placeSymbol(0, 2);
-me.placeSymbol(1, 2);
-me.placeSymbol(2, 2);
-Gameboard.printBoard();
-GameController.checkForWin();
-
-let currentPlayer = Player[0];
-
-const getCurrentPlayer = () => {
-  console.log(currentPlayer);
-  return currentPlayer;
-};
-const getPlayerTurn = (player) => {
-  currentPlayer = currentPlayer == Player[0] ? Player[1] : Player[0];
-};
-
-return { getPlayerTurn, getCurrentPlayer };
+const startButton = document.querySelector("#start-button");
+startButton.addEventListener("click", () => {
+  GameController.start();
+});
