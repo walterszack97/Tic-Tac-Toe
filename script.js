@@ -48,13 +48,11 @@ const Gameboard = (() => {
 
     if (row1.every(isFilled)) {
       if (row1[0] === row1[1] && row1[1] === row1[2]) {
-        console.log(row1);
         return true;
       }
     }
     if (row2.every(isFilled)) {
       if (row2[0] === row2[1] && row2[1] === row2[2]) {
-        console.log(row2);
         return true;
       }
     }
@@ -91,6 +89,8 @@ const Gameboard = (() => {
   };
 
   const checkHorizontalForWin = () => {
+    let hor1 = [_board[0], _board[4], _board[8]];
+    let hor2 = [_board[2], _board[4], _board[6]];
     if (
       (_board[0] !== "" && _board[4] !== "" && _board[8] !== "") ||
       (_board[2] !== "" && _board[4] !== "" && _board[6] !== "")
@@ -153,6 +153,7 @@ const createPlayer = (name, symbol) => {
 const GameController = (() => {
   let players = [];
   let currentPlayerIndex;
+  const playerTurn = document.querySelector("#playerTurn");
 
   const start = () => {
     players = [
@@ -160,6 +161,7 @@ const GameController = (() => {
       createPlayer(document.querySelector("#player2").value, "O"),
     ];
     currentPlayerIndex = 0;
+    playerTurn.textContent = `PLAYER TURN: ${players[currentPlayerIndex].name}`;
     Gameboard.render();
   };
 
@@ -175,6 +177,7 @@ const GameController = (() => {
         tieGame();
       }
       currentPlayerIndex = currentPlayerIndex === 0 ? 1 : 0;
+      playerTurn.textContent = `PLAYER TURN: ${players[currentPlayerIndex].name}`;
     }
   };
 
