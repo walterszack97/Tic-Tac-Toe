@@ -1,0 +1,22 @@
+#boardContainer {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
+  width: fit-content;
+  background-color: aqua;
+}
+.boardCells {
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  border: 1px solid black;
+  width: 200px;
+  height: 200px;
+}
+#playerContainer {
+  display: inline-block;
+}
+#fieldContainer {
+  display: flex;
+  border: none;
+}
